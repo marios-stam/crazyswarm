@@ -5,6 +5,8 @@
 
   <rosparam command="load" file="$(find crazyswarm)/launch/crazyflieTypes.yaml" />
   <rosparam command="load" file="$(find crazyswarm)/launch/crazyflies.yaml" />
+  <!-- <rosparam command="load" file="$(find crazyswarm)/launch/calibration_params.yml" /> -->
+
 
   <!-- Run crazyswarm_server, if sim is set to False -->
   <node unless="$(arg sim)" pkg="crazyswarm" type="crazyswarm_server" name="crazyswarm_server" output="screen" >

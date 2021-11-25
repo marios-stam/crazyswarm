@@ -146,12 +146,13 @@ catkin_package(
 include_directories(
   ${catkin_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
+  ${OPENCV_INCLUDE_DIRS}
   externalDependencies/libmotioncapture/include
   ../externalDependencies/libobjecttracker/include
   ## TODO remove this dependency
   ../../../crazyflie-firmware/src/modules/interface/
 )
-
+find_package(OpenCV REQUIRED)
 
 ## Declare a cpp executable
 add_executable(crazyswarm_server
@@ -180,7 +181,14 @@ add_executable(mocap_helper
   src/mocap_helper.cpp
 )
 
+target_link_directories( mocap_helper PUBLIC
+  ${OPENCV_LIBRARY_DIRS}
+  ${OPENCV_LIBRARY_DIRS}
+
+)
+
 target_link_libraries(mocap_helper
+  ${OpenCV_LIBRARIES}
   ${catkin_LIBRARIES}
   libmotioncapture
 )
