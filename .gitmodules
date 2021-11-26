@@ -12,3 +12,7 @@
 [submodule "ros_ws/src/crazyswarm/externalDependencies/libmotioncapture"]
 	path = ros_ws/src/crazyswarm/externalDependencies/libmotioncapture
 	url = https://github.com/marios-stam/libmotioncapture.git
+
+[submodule "ros_ws/src/drone_path_planning"]
+	path = ros_ws/src/drone_path_planning
+	url = https://github.com/marios-stam/drone_path_planning.git
