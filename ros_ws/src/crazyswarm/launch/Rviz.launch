@@ -3,4 +3,9 @@
   
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find crazyswarm)/launch/test.rviz"/>
 
+  <include file="$(find drone_path_planning)/launch/dronesVisual.launch">
+	  <!-- all vars that included.launch requires must be set -->
+	  <!-- <arg name="hoge" value="fuga" /> -->
+	</include>
+
 </launch>
