@@ -5,8 +5,6 @@
 
   <rosparam command="load" file="$(find crazyswarm)/launch/crazyflieTypes.yaml" />
   <rosparam command="load" file="$(find crazyswarm)/launch/crazyflies.yaml" />
-  <!-- <rosparam command="load" file="$(find crazyswarm)/launch/calibration_params.yml" /> -->
-
 
   <!-- Run crazyswarm_server, if sim is set to False -->
   <node unless="$(arg sim)" pkg="crazyswarm" type="crazyswarm_server" name="crazyswarm_server" output="screen" >
@@ -39,12 +37,12 @@
       object_tracking_type: "motionCapture" # one of motionCapture,libobjecttracker
       send_position_only: True # set to False to send position+orientation; set to True to send position only
       motion_capture_host_name: "aruco"
-      # motion_capture_interface_ip: "" # optional for optitrack with multiple interfaces
+      <!-- # motion_capture_interface_ip: "" # optional for optitrack with multiple interfaces -->
       save_point_clouds: "/dev/null" # set to a valid path to log mocap point cloud binary file.
-      print_latency: True
+      print_latency: False
       write_csvs: False
       force_no_cache: False
-      enable_parameters: False
+      enable_parameters: True
       enable_logging: False
       enable_logging_pose: True
     </rosparam>
@@ -63,8 +61,10 @@
     <param name="timescale" value="0.8" />
   </node>
 
-  <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find crazyswarm)/launch/test.rviz"/> -->
-
+  <node name="cf1" pkg="crazyswarm" type="example_distributed.py" output="screen" >
+    <param name="cfid" value="1" />
+  </node>
+  
   <!-- <node pkg="rqt_plot" type="rqt_plot" name="rqt_plot_x" args="/cf2/log1/values[0]"/> -->
   <!-- <node pkg="rqt_plot" type="rqt_plot" name="rqt_plot_roll" args="/cf1/log1/values[2] /cf1/log1/values[3]"/> -->
 

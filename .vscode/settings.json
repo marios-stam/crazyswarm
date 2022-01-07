@@ -77,5 +77,6 @@
     "--max-line-length",
     "120",
     "--experimental"
-  ]
+  ],
+  "python.formatting.provider": "autopep8"
 }

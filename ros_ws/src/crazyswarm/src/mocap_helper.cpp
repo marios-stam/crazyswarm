@@ -26,8 +26,7 @@ int main(int argc, char **argv)
         cfg["interface_ip"] = interface_ip;
     }
 
-    std::unique_ptr<libmotioncapture::MotionCapture> mocap(
-        libmotioncapture::MotionCapture::connect(motionCaptureType, cfg));
+    std::unique_ptr<libmotioncapture::MotionCapture> mocap(libmotioncapture::MotionCapture::connect(motionCaptureType, cfg));
     if (!mocap)
     {
         throw std::runtime_error("Unknown motion capture type!");
@@ -35,25 +34,24 @@ int main(int argc, char **argv)
 
     for (size_t frameId = 0; ros::ok(); ++frameId)
     {
-        std::cout << "frame " << frameId << ":" << std::endl;
+        // std::cout << "frame " << frameId << ":" << std::endl;
         // Get a frame
         mocap->waitForNextFrame();
         const auto &markers = mocap->pointCloud();
 
-        std::cout << "    points:" << std::endl;
+        // std::cout << "    points:" << std::endl;
 
         for (size_t i = 0; i < markers.rows(); ++i)
         {
             const auto &point = markers.row(i);
-            std::cout << "      \"" << i << "\": [" << point(0) << "," << point(1) << ","
-                      << point(2) << "]" << std::endl;
+            // std::cout << "      \"" << i << "\": [" << point(0) << "," << point(1) << "," << point(2) << "]" << std::endl;
         }
 
         if (mocap->supportsRigidBodyTracking())
         {
             const auto &rigidBodies = mocap->rigidBodies();
 
-            std::cout << "    rigidBodies:" << std::endl;
+            // std::cout << "    rigidBodies:" << std::endl;
 
             for (auto const &kv : rigidBodies)
             {
@@ -62,11 +60,9 @@ int main(int argc, char **argv)
 
                 Eigen::Vector3f position = body.position();
                 Eigen::Quaternionf rotation = body.rotation();
-                std::cout << "       position: [" << position(0) << ", " << position(1) << ", "
-                          << position(2) << "]" << std::endl;
-                std::cout << "       rotation: [" << rotation.w() << ", " << rotation.vec()(0)
-                          << ", " << rotation.vec()(1) << ", " << rotation.vec()(2) << "]"
-                          << std::endl;
+                std::cout << "       position: [" << position(0) << ", " << position(1) << ", " << position(2) << "]" << std::endl;
+                std::cout << "       rotation: [" << rotation.w() << ", " << rotation.vec()(0) << ", " << rotation.vec()(1) << ", "
+                          << rotation.vec()(2) << "]" << std::endl;
             }
         }
 
