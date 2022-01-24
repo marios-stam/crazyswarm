@@ -8,4 +8,7 @@
 	  <!-- <arg name="hoge" value="fuga" /> -->
 	</include>
 
+  <node pkg="drone_path_planning" name="rigidBodyPath"  type="rigidBodyPath.py" output="screen" />
+  <node pkg="catenaries" name="catenaries_listener"  type="catenaries_listener.py" output="screen" />
+
 </launch>
