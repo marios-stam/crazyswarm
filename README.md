@@ -2,6 +2,9 @@
 ![Sim-Only Conda CI](https://github.com/USC-ACTLab/crazyswarm/workflows/Sim-Only%20Conda%20CI/badge.svg)
 [![Documentation Status](https://readthedocs.org/projects/crazyswarm/badge/?version=latest)](https://crazyswarm.readthedocs.io/en/latest/?badge=latest)
 
+# Message from Marios
+Hey there ,I am using the CrazySwarm Framework for my thesis and I am currently working on dev-sim-ros brnach.There you can find all my work and my commits.
+
 # Crazyswarm
 A Large Nano-Quadcopter Swarm.
 
