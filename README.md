@@ -3,7 +3,7 @@
 [![Documentation Status](https://readthedocs.org/projects/crazyswarm/badge/?version=latest)](https://crazyswarm.readthedocs.io/en/latest/?badge=latest)
 
 # Message from Marios
-Hey there ,I am using the CrazySwarm Framework for my thesis and I am currently working on [dev-sim-ros](https://github.com/marios-stam/crazyswarm/tree/dev-sim-ros) brnach.There you can find all my work and my commits.
+Hey there ,I am using the CrazySwarm Framework for my thesis and I am currently working on [dev-sim-ros](https://github.com/marios-stam/crazyswarm/tree/dev-sim-ros) branch.There you can find all my work and my commits.
 
 # Crazyswarm
 A Large Nano-Quadcopter Swarm.
