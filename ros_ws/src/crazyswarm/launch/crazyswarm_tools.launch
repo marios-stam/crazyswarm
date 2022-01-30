@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="sim" default="false" />
+  <arg name="joy_dev" default="/dev/input/js0" />
+
+  <rosparam command="load" file="$(find crazyswarm)/launch/crazyflieTypes.yaml" />
+  <rosparam command="load" file="$(find crazyswarm)/launch/crazyflies.yaml" />
+  <!-- <rosparam command="load" file="$(find crazyswarm)/launch/calibration_params.yml" /> -->
+
+
+  <!-- Run crazyswarm_server, if sim is set to False -->
+  <node unless="$(arg sim)" pkg="crazyswarm" type="crazyswarm_server" name="crazyswarm_server" output="screen" >
+    <rosparam>
+      # Logging configuration (Use enable_logging to actually enable logging)
+      genericLogTopics: ["log1"]
+      genericLogTopicFrequencies: [10]
+      genericLogTopic_log1_Variables: ["stateEstimate.x", "ctrltarget.x"]
+      # firmware parameters for all drones (use crazyflieTypes.yaml to set per type, or
+      # allCrazyflies.yaml to set per drone)
+      firmwareParams:
+        commander:
+          enHighLevel: 1
+        stabilizer:
+          estimator: 2 # 1: complementary, 2: kalman
+          controller: 2 # 1: PID, 2: mellinger
+        ring:
+          effect: 16 # 6: double spinner, 7: solid color, 16: packetRate
+          solidBlue: 255 # if set to solid color
+          solidGreen: 0 # if set to solid color
+          solidRed: 0 # if set to solid color
+          headlightEnable: 0
+        locSrv:
+          extPosStdDev: 1e-3
+          extQuatStdDev: 0.5e-1
+        kalman:
+          resetEstimation: 1
+      # tracking
+      motion_capture_type: "aruco" # one of none,vicon,optitrack,optitrack_closed_source,qualisys,vrpn
+      object_tracking_type: "motionCapture" # one of motionCapture,libobjecttracker
+      send_position_only: True # set to False to send position+orientation; set to True to send position only
+      motion_capture_host_name: "aruco"
+      # motion_capture_interface_ip: "" # optional for optitrack with multiple interfaces
+      save_point_clouds: "/dev/null" # set to a valid path to log mocap point cloud binary file.
+      print_latency: True
+      write_csvs: False
+      force_no_cache: False
+      enable_parameters: False
+      enable_logging: False
+      enable_logging_pose: True
+    </rosparam>
+  </node>
+
+  <!-- Run crazyswarm_server simulation, if sim is set to True -->
+  <node if="$(arg sim)" name="sim" pkg="crazyswarm" type="sim_ros.py" output="screen">
+  </node>
+
+  <node name="joy" pkg="joy" type="joy_node" output="screen">
+    <param name="dev" value="$(arg joy_dev)" />
+  </node>
+
+  <node pkg="crazyswarm" type="crazyswarm_teleop" name="crazyswarm_teleop" output="screen">
+    <param name="csv_file" value="$(find crazyswarm)/launch/figure8_smooth.csv" />
+    <param name="timescale" value="0.8" />
+  </node>
+
+</launch>
