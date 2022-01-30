@@ -206,6 +206,7 @@ target_link_libraries(mocap_helper
 ## in contrast to setup.py, you can choose the destination
 install(PROGRAMS
   scripts/Marios_trajectories.py
+  scripts/traj_executor.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
