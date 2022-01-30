@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
 <launch>
   
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find crazyswarm)/launch/test.rviz"/>
+  	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find crazyswarm)/launch/test.rviz"/>
 
-  <include file="$(find drone_path_planning)/launch/dronesVisual.launch">
+  	<include file="$(find drone_path_planning)/launch/dronesVisual.launch">
 	  <!-- all vars that included.launch requires must be set -->
 	  <!-- <arg name="hoge" value="fuga" /> -->
 	</include>
 
-  <include file="$(find crazyswarm)/launch/crazyswarm_tools.launch">
-    <!-- all vars that included.launch requires must be set -->
-    <!-- <arg name="hoge" value="fuga" /> -->
-    </include>
+	<include file="$(find crazyswarm)/launch/crazyswarm_tools.launch">
+    	<!-- all vars that included.launch requires must be set -->
+		<arg name="sim" value="true" />
+	</include>
     
-  <!-- <node pkg="drone_path_planning" name="rigidBodyPath"  type="rigidBodyPath.py" output="screen" />
-  <node pkg="catenaries" name="catenaries_listener"  type="catenaries_listener.py" output="screen" /> -->
+  	<!-- <node pkg="drone_path_planning" name="rigidBodyPath"  type="rigidBodyPath.py" output="screen" />
+  	<node pkg="catenaries" name="catenaries_listener"  type="catenaries_listener.py" output="screen" /> -->
 
 </launch>

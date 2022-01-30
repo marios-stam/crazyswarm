@@ -71,26 +71,58 @@ def callback(piece_pol: TrajectoryPolynomialPieceMarios):
     matrix[:, 25:33] = yaw
 
     file_name = "piecewise_pole.csv"
-    np.savetxt(file_name, matrix, delimiter=",")
+    names = ["duration",
+             "x^0", "x^1", "x^2", "x^3", "x^4", "x^5", "x^6", "x^7",
+             "y^0", "y^1", "y^2", "y^3", "y^4", "y^5", "y^6", "y^7",
+             "z^0", "z^1", "z^2", "z^3", "z^4", "z^5", "z^6", "z^7",
+             "yaw^0", "yaw^1", "yaw^2", "yaw^3", "yaw^4", "yaw^5", "yaw^6", "yaw^7"]
 
+    np.savetxt(file_name,  matrix, delimiter=",", fmt='%.6f')
+    # file_name = "/home/marios/crazyswarm/ros_ws/src/crazyswarm/scripts/figure8.csv"
     traj = uav_trajectory.Trajectory()
     traj.loadcsv(file_name)  # TODO:Loaf trajectory without using file
+
+    cf.uploadTrajectory(trajectoryId=0, pieceOffset=0, trajectory=traj)
+    print("Uploaded Trajectory!")
+
+    print("Taking off...")
+    cf.takeoff(targetHeight=1, duration=4.0)
+    rospy.sleep(4)
+
+    print("Going to start position...")
+    evaluation = traj.eval(t=0)
+    pos, yaw = evaluation.pos, evaluation.yaw
+    x, y, z = pos[0], pos[1], pos[2]
+
+    print("x, y, z, yaw:", x, y, z, yaw)
+    cf.goTo([x, y, z], yaw=0, duration=4.0)
+    rospy.sleep(4)
+
+    print("Starting trajectory...")
+    cf.startTrajectory(trajectoryId=0)
+    rospy.sleep(traj.duration)
+
+    print("Landing...")
+    cf.land(targetHeight=0.02, duration=2.0)
+    rospy.sleep(2)
+
+    cf.cmdStop()
 
 
 if __name__ == "__main__":
 
     rospy.init_node("CrazyflieDistributed")
 
-    # cf = None
-    # for crazyflie in rospy.get_param("crazyflies"):
-    #     cfid = int(crazyflie["id"])
-    #     print(cfid)
-    #     if cfid == int(crazyflie["id"]):
-    #         initialPosition = crazyflie["initialPosition"]
-    #         tf = TransformListener()
-    #         cf = Crazyflie(cfid, initialPosition, tf)
-    #         print("Found cf with id:", cfid)
-    #         break
+    cf = None
+    for crazyflie in rospy.get_param("crazyflies"):
+        cfid = int(crazyflie["id"])
+        print(cfid)
+        if cfid == int(crazyflie["id"]):
+            initialPosition = crazyflie["initialPosition"]
+            tf_listener = TransformListener()
+            cf = Crazyflie(cfid, initialPosition, tf_listener)
+            print("Found cf with id:", cfid)
+            break
 
     rospy.Subscriber('piece_pol', TrajectoryPolynomialPieceMarios, callback)
 
