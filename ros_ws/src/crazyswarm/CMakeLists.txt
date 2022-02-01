@@ -207,6 +207,7 @@ target_link_libraries(mocap_helper
 install(PROGRAMS
   scripts/Marios_trajectories.py
   scripts/traj_executor.py
+  scripts/traj_executor_position_controller.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
