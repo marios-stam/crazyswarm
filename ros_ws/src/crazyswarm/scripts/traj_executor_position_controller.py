@@ -1,19 +1,15 @@
 #!/usr/bin/env python3
 
 from concurrent.futures import thread
-from cv2 import threshold
 import rospy
 from rospy.client import INFO
-from tf import TransformListener
 import numpy as np
 from geometry_msgs.msg import PoseStamped
-from pycrazyswarm.crazyflie import Crazyflie
-from uav_trajectory import Trajectory
 from crazyswarm.msg import TrajectoryPolynomialPieceMarios
 from nav_msgs.msg import Odometry
+from std_msgs.msg import String
 
 import tf
-import os
 import uav_trajectory
 import sys
 
@@ -33,13 +29,17 @@ class TrajectoryExecutor_Position_Controller:
     def odometry_callback(self, odom: Odometry):
         self.odom = odom
 
-    def wait_until_get_to_pose(self, pose: PoseStamped):
+    def wait_until_get_to_pose(self, x, y, z, yaw):
+
         threshold = 0.1  # propably needs tuning
         if self.odom is None:
             raise Exception("No odometry received yet")
 
+        des_pose = PoseStamped()
+        des_pose.pose.position.x, des_pose.pose.position.y, des_pose.pose.position.z = x, y, z
+
         while True:
-            if np.linalg.norm(np.array(pose.pose.position) - np.array(self.odom.pose.pose.position)) < threshold:
+            if np.linalg.norm(np.array(des_pose.pose.position) - np.array(self.odom.pose.pose.position)) < threshold:
                 break
 
     def receive_trajectory(self, piece_pol: TrajectoryPolynomialPieceMarios):
@@ -89,6 +89,16 @@ class TrajectoryExecutor_Position_Controller:
 
         return start_pose
 
+    def take_off(self, height=1):
+        x, y, z = self.odom.pose.pose.position.x, self.odom.pose.pose.position.y, self.odom.pose.pose.position.z
+
+        self.go_to_pose(x, y, height, 0)
+        self.wait_until_get_to_pose(x, y, height, 0)
+
+    def land(self):
+        print("Landing...")
+        safety_land_publisher.publish("Land")  # Land string is not necessary, but it is nice to have
+
     def execute_trajectory(self, matrix):
         file_name = "piecewise_pole_{}.csv".format(executor_id)
         names = ["duration",
@@ -109,16 +119,8 @@ class TrajectoryExecutor_Position_Controller:
         start_pose = self.get_traj_start_pose()
 
         self.go_to_pose(start_pose.pose.position.x, start_pose.pose.position.y, start_pose.pose.position.z, yaw=0)
-        self.wait_until_get_to_pose(start_pose)
-
-        # for i, t in enumerate(t_space[:-1]):
-        #     evaluation = tr.eval(t)
-        #     pos, yaw = evaluation.pos, evaluation.yaw
-        #     x, y, z = pos[0], pos[1], pos[2]
-
-        #     print("t:", t, "x:", x, "y:", y, "z:", z, "yaw:", yaw)
-
-        #     self.go_to_pose(x, y, z, yaw)
+        self.wait_until_get_to_pose(start_pose.pose.position.x, start_pose.pose.position.y,
+                                    start_pose.pose.position.z, yaw=0)
 
         # frequency of sending references to the controller in hz
         rate = rospy.Rate(10.0)
@@ -136,6 +138,8 @@ class TrajectoryExecutor_Position_Controller:
 
             rate.sleep()
 
+        self.land()
+
 
 if __name__ == "__main__":
     rospy.init_node("Traj_Executor_Position_Controller")
@@ -151,4 +155,5 @@ if __name__ == "__main__":
     odometry_sub = rospy.Subscriber('/pixy/vicon/demo_crazyflie8/demo_crazyflie8/odom',
                                     Odometry, executor_pos.odometry_callback)
 
+    safety_land_publisher = rospy.Publisher('safety_land', String, queue_size=10)
     rospy.spin()
