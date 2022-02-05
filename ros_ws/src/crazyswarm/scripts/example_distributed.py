@@ -40,6 +40,25 @@ def run(tf, cf: Crazyflie):
     cf.cmdStop()
 
 
+def run_test(tf, cf):
+    print("Running test crazyswarm function...")
+
+    print("Taking off...")
+    cf.takeoff(targetHeight=0.5, duration=2.0)
+    rospy.sleep(2)
+
+    # print("Going to position...")
+    # cf.goTo([0.5, 0.5, 0.5], yaw=0, duration=2.0)
+    # rospy.sleep(2)
+
+    print("Landing...")
+    cf.land(targetHeight=0.02, duration=2.0)
+    rospy.sleep(2)
+
+    print("Stopping...")
+    cf.cmdStop()
+
+
 if __name__ == "__main__":
 
     rospy.init_node("CrazyflieDistributed", anonymous=True)
@@ -57,7 +76,8 @@ if __name__ == "__main__":
     if cf is None:
         rospy.logwarn("No CF with required ID {} found!".format(cfid))
     else:
-        pass
-        run(tf, cf)
+        run_test(tf, cf)  # Used to check the functionality of the system
+        # run(tf, cf)
+
     # pos = cf.initialPosition.copy()
     # cf.takeoff(targetHeight=0.5, duration=2.0)
